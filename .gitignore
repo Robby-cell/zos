@@ -1,0 +1,7 @@
+/limine
+/ovmf
+*.iso
+*.hdd
+
+zig-cache
+zig-out
