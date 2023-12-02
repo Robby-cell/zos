@@ -32,5 +32,15 @@ pub fn build(b: *std.build.Builder) !void {
     kernel.setLinkerScriptPath(.{ .path = "linker.ld" });
     kernel.pie = true;
 
+    kernel.addCSourceFile(.{ .file = .{ .path = "c/print.c" }, .flags = &.{
+        "-ffreestanding",
+        "-target",
+        "x86_64-freestanding-none",
+        "-fPIE",
+        "-arch",
+        "x86_64-mmx+soft_float-sse-sse2",
+    } });
+    kernel.addIncludePath(.{ .path = "c" });
+
     b.installArtifact(kernel);
 }

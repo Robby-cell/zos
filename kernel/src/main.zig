@@ -1,5 +1,7 @@
 const limine = @import("limine");
 const std = @import("std");
+const done = @import("./globl.zig").done;
+const print = @import("./print.zig");
 
 // The Limine requests can be placed anywhere, but it is important that
 // the compiler does not optimise them away, so, usually, they should
@@ -10,12 +12,6 @@ pub export var framebuffer_request: limine.FramebufferRequest = .{};
 // base revision described by the Limine boot protocol specification.
 // See specification for further info.
 pub export var base_revision: limine.BaseRevision = .{ .revision = 1 };
-
-inline fn done() noreturn {
-    while (true) {
-        asm volatile ("hlt");
-    }
-}
 
 // The following will be our kernel's entry point.
 export fn _start() callconv(.C) noreturn {
@@ -42,6 +38,9 @@ export fn _start() callconv(.C) noreturn {
             @as(*u32, @ptrCast(@alignCast(framebuffer.address + pixel_offset))).* = 0xFFFFFFFF;
         }
     }
+
+    const msg = "hello world";
+    print._print(msg);
 
     // We're done, just hang...
     done();
