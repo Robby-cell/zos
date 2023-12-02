@@ -1,12 +1,17 @@
 const std = @import("std");
 
+const @"soft floats" = true;
+
 const cFlags = &.{
     "-ffreestanding",
     "-target",
     "x86_64-freestanding-none",
     "-fPIE",
     "-arch",
-    "x86_64-mmx+soft_float-sse-sse2",
+    if (@"soft floats")
+        "x86_64-mmx+soft_float-sse-sse2"
+    else
+        "x86_64",
 };
 const cSource = &.{
     "c/print.c",
@@ -25,10 +30,13 @@ pub fn build(b: *std.build.Builder) !void {
     const Features = std.Target.x86.Feature;
     target.cpu_features_sub.addFeature(@intFromEnum(Features.mmx));
     target.cpu_features_sub.addFeature(@intFromEnum(Features.sse));
-    target.cpu_features_sub.addFeature(@intFromEnum(Features.sse2));
     target.cpu_features_sub.addFeature(@intFromEnum(Features.avx));
     target.cpu_features_sub.addFeature(@intFromEnum(Features.avx2));
-    target.cpu_features_add.addFeature(@intFromEnum(Features.soft_float));
+
+    if (@"soft floats") {
+        target.cpu_features_sub.addFeature(@intFromEnum(Features.sse2));
+        target.cpu_features_add.addFeature(@intFromEnum(Features.soft_float));
+    }
 
     // Build the kernel itself.
     const optimize = b.standardOptimizeOption(.{});

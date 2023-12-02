@@ -9,7 +9,7 @@ void e9_putc(char c) {
         limine_print(&c, 1);
 #if defined(__x86_64__) || defined(__i386__)
     __asm__ __volatile__("outb %0, %1"
-        : : "a"(c), "Nd"(0xe9)
+        :: "a"(c), "Nd"(0xe9)
         : "memory");
 #endif
 }
