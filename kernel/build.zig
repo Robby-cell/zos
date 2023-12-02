@@ -1,5 +1,17 @@
 const std = @import("std");
 
+const cFlags = &.{
+    "-ffreestanding",
+    "-target",
+    "x86_64-freestanding-none",
+    "-fPIE",
+    "-arch",
+    "x86_64-mmx+soft_float-sse-sse2",
+};
+const cSource = &.{
+    "c/print.c",
+};
+
 pub fn build(b: *std.build.Builder) !void {
     // Define a freestanding x86_64 cross-compilation target.
     var target: std.zig.CrossTarget = .{
@@ -32,14 +44,9 @@ pub fn build(b: *std.build.Builder) !void {
     kernel.setLinkerScriptPath(.{ .path = "linker.ld" });
     kernel.pie = true;
 
-    kernel.addCSourceFile(.{ .file = .{ .path = "c/print.c" }, .flags = &.{
-        "-ffreestanding",
-        "-target",
-        "x86_64-freestanding-none",
-        "-fPIE",
-        "-arch",
-        "x86_64-mmx+soft_float-sse-sse2",
-    } });
+    inline for (cSource) |srcFile| {
+        kernel.addCSourceFile(.{ .file = .{ .path = srcFile }, .flags = cFlags });
+    }
     kernel.addIncludePath(.{ .path = "c" });
 
     b.installArtifact(kernel);
