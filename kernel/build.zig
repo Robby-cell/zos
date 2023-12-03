@@ -1,6 +1,6 @@
 const std = @import("std");
 
-const @"soft floats" = true;
+const @"soft floats" = false;
 
 const cFlags = &.{
     "-ffreestanding",
