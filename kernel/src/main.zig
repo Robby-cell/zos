@@ -40,7 +40,7 @@ export fn _start() callconv(.C) noreturn {
     }
 
     const msg = "hello world";
-    print._print(msg);
+    print.print_blind(msg);
 
     // We're done, just hang...
     done();

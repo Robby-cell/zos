@@ -4,11 +4,11 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-extern void (*limine_print)(const char* buf, size_t size);
+extern void (*limine_print)(const char *buf, size_t size);
 
-void e9_putc(char c);
-void e9_print(const char* msg);
-void e9_puts(const char* msg);
-void e9_printf(const char* format, ...);
+void putc(char c);
+void print_blind(const char *msg);
+void _puts(const char *msg);
+void _printf(const char *format, ...);
 
 #endif

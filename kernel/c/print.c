@@ -1,10 +1,10 @@
 #include <print.h>
 
-void (*limine_print)(char const* buf, size_t len) = NULL;
+void (*limine_print)(char const *buf, size_t len) = NULL;
 
 static char const CONVERSION_TABLE[] = "0123456789abcdef";
 
-void e9_putc(char c) {
+void putc(char c) {
     if (limine_print != NULL)
         limine_print(&c, 1);
 #if defined(__x86_64__) || defined(__i386__)
@@ -14,23 +14,23 @@ void e9_putc(char c) {
 #endif
 }
 
-void e9_print(const char* msg) {
+void print_blind(const char *msg) {
     for (size_t i = 0; msg[i]; i++) {
-        e9_putc(msg[i]);
+        putc(msg[i]);
     }
 }
 
-void e9_puts(const char* msg) {
-    e9_print(msg);
-    e9_putc('\n');
+void _puts(const char *msg) {
+    print_blind(msg);
+    putc('\n');
 }
 
-static void e9_printhex(size_t num) {
+static void e_printhex(size_t num) {
     int i;
     char buf[17];
 
     if (!num) {
-        e9_print("0x0");
+        print_blind("0x0");
         return;
     }
 
@@ -42,16 +42,16 @@ static void e9_printhex(size_t num) {
     }
 
     i++;
-    e9_print("0x");
-    e9_print(&buf[i]);
+    print_blind("0x");
+    print_blind(&buf[i]);
 }
 
-static void e9_printdec(size_t num) {
+static void _printdec(size_t num) {
     int i;
     char buf[21] = { 0 };
 
     if (!num) {
-        e9_putc('0');
+        putc('0');
         return;
     }
 
@@ -61,10 +61,10 @@ static void e9_printdec(size_t num) {
     }
 
     i++;
-    e9_print(buf + i);
+    print_blind(buf + i);
 }
 
-void e9_printf(const char* format, ...) {
+void _printf(const char *format, ...) {
     va_list argp;
     va_start(argp, format);
 
@@ -72,18 +72,20 @@ void e9_printf(const char* format, ...) {
         if (*format == '%') {
             format++;
             if (*format == 'x') {
-                e9_printhex(va_arg(argp, size_t));
+                e_printhex(va_arg(argp, size_t));
             } else if (*format == 'd') {
-                e9_printdec(va_arg(argp, size_t));
+                _printdec(va_arg(argp, size_t));
             } else if (*format == 's') {
-                e9_print(va_arg(argp, char*));
+                print_blind(va_arg(argp, char *));
+            } else if (*format == 'c') {
+                putc(va_arg(argp, char));
             }
         } else {
-            e9_putc(*format);
+            putc(*format);
         }
         format++;
     }
 
-    e9_putc('\n');
+    putc('\n');
     va_end(argp);
 }
