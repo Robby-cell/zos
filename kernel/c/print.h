@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#include "limine.h"
+
 extern void (*limine_print)(const char *buf, size_t size);
 
 void putc(char c);
