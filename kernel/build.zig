@@ -52,10 +52,21 @@ pub fn build(b: *std.build.Builder) !void {
     kernel.setLinkerScriptPath(.{ .path = "linker.ld" });
     kernel.pie = true;
 
-    inline for (cSource) |srcFile| {
-        kernel.addCSourceFile(.{ .file = .{ .path = srcFile }, .flags = cFlags });
-    }
-    kernel.addIncludePath(.{ .path = "c" });
+    const shared = b.addStaticLibrary(.{
+        .name = "stdlib",
+        .root_source_file = .{ .path = "shared/root.zig" },
+        .optimize = optimize,
+        .target = target,
+    });
+    shared.addCSourceFiles(.{
+        .files = &.{
+            "shared/c/print.c",
+        },
+        .flags = cFlags,
+    });
+    kernel.linkLibrary(shared);
+
+    kernel.addIncludePath(.{ .path = "shared/c" });
 
     b.installArtifact(kernel);
 }

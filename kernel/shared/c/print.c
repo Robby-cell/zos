@@ -1,4 +1,4 @@
-#include <print.h>
+#include "print.h"
 
 void (*limine_print)(char const *buf, size_t len) = NULL;
 
