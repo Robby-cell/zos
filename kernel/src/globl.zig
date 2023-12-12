@@ -1,4 +1,4 @@
-pub inline fn done() noreturn {
+pub export fn hcf() noreturn {
     while (true) {
         asm volatile ("hlt");
     }

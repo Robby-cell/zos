@@ -1,6 +1,6 @@
 const limine = @import("limine");
 const std = @import("std");
-const done = @import("./globl.zig").done;
+const hcf = @import("./globl.zig").hcf;
 const print = @import("./print.zig");
 
 // The Limine requests can be placed anywhere, but it is important that
@@ -17,13 +17,13 @@ pub export var base_revision: limine.BaseRevision = .{ .revision = 1 };
 export fn _start() callconv(.C) noreturn {
     // Ensure the bootloader actually understands our base revision (see spec).
     if (!base_revision.is_supported()) {
-        done();
+        hcf();
     }
 
     // Ensure we got a framebuffer.
     if (framebuffer_request.response) |framebuffer_response| {
         if (framebuffer_response.framebuffer_count < 1) {
-            done();
+            hcf();
         }
 
         // Get the first framebuffer's information.
@@ -43,5 +43,5 @@ export fn _start() callconv(.C) noreturn {
     print.print_blind(msg);
 
     // We're done, just hang...
-    done();
+    hcf();
 }

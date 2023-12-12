@@ -7,6 +7,9 @@
 #include "limine.h"
 
 extern void (*limine_print)(const char *buf, size_t size);
+/// @brief Halt and Catch Fire
+/// @param  
+extern void hcf(void);
 
 void putc(char c);
 void print_blind(const char *msg);
